@@ -89,7 +89,7 @@ def test_gymnasium_wrapper_terminal_state():
 def test_gymnasium_wrapper_truncated_state():
     print("Testing Gymnasium wrapper truncated state")
     env = VizdoomEnv(
-        config=os.path.join(
+        config_file=os.path.join(
             test_env_configs, "basic_rgb_idla_0_1.cfg"
         ),  # For this config it is impossible to get other terminal state than timeout
         frame_skip=10,  # Using frame_skip=10 to speed up the test
@@ -159,7 +159,7 @@ def test_gymnasium_wrapper_obs_space():
 
     for i in range(len(env_configs)):
         env = VizdoomEnv(
-            config=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+            config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
             frame_skip=1,
             max_buttons_pressed=0,
         )
@@ -367,7 +367,7 @@ def test_gymnasium_wrapper_action_space():
     for max_button_pressed in range(0, 4):
         for i in range(len(env_configs)):
             env = VizdoomEnv(
-                config=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+                config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
                 frame_skip=1,
                 max_buttons_pressed=max_button_pressed,
             )
