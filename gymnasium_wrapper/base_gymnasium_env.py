@@ -32,6 +32,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
+        use_multi_discrete_action_space: bool = False,
     ):
         """
         Base class for Gymnasium interface for ViZDoom.
@@ -39,7 +40,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         Child classes are defined in gymnasium_env_defns.py,
 
         Arguments:
-            level (str): The path to the config file to load. Most settings should be set by this config file.
+            config_file (str): The path to the config file to load. Most settings should be set by this config file.
             frame_skip (int): The number of frames the will be advanced per action. 1 = take action on every frame. Default: 1.
             max_buttons_pressed (int): Defines the number of binary buttons that can be selected at once. Default: 1.
                                        Should be >= 0. If < 0 a RuntimeError is raised.
@@ -52,6 +53,8 @@ class VizdoomEnv(gym.Env, EzPickle):
             render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
             treat_episode_timeout_as_truncation (bool): If True, the episode will be treated as truncated
                                                         when the internal episode timeout is reached. Default: True.
+            use_multi_discrete_action_space (bool): If True, the MultiDiscrete([2] * len(binary_ uttons)) action space
+                                                    will be used for buttons binary buttons instead of MultiBinary.
 
         This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 
