@@ -8,7 +8,7 @@ import pickle
 
 import gymnasium
 import numpy as np
-from gymnasium.spaces import Box, Dict, Discrete, MultiDiscrete
+from gymnasium.spaces import Box, Dict, Discrete, MultiBinary, MultiDiscrete
 from gymnasium.utils.env_checker import check_env, data_equivalence
 
 from vizdoom import gymnasium_wrapper  # noqa
@@ -173,6 +173,20 @@ def test_gymnasium_wrapper_obs_space():
         ), f"Step observation: {obs!r} not in space"
 
 
+def _compare_action_spaces(env, expected_action_space):
+    """
+    Helper function to compare the action space of the environment with the expected action space.
+    """
+    assert env.action_space == expected_action_space, (
+        f"Incorrect action space: {env.action_space!r}, "
+        f"should be: {expected_action_space!r}"
+    )
+    env.reset()
+    # check successful call to step using action_space.sample()
+    sample_action = env.action_space.sample()
+    env.step(sample_action)
+
+
 # Testing all possible action space combinations
 def test_gymnasium_wrapper_action_space():
     print("Testing Gymnasium wrapper action spaces")
@@ -184,8 +198,55 @@ def test_gymnasium_wrapper_action_space():
         "basic_rgb_id_2_0",
         "basic_rgb_idla_0_1",
     ]
-    action_spaces = [
-        # max_button_pressed = 0, binary action space is MultiDiscrete
+    # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
+    multi_binary_action_spaces = [
+        [
+            Dict(
+                {
+                    "binary": MultiBinary(1),
+                    "continuous": Box(
+                        np.finfo(np.float32).min,
+                        np.finfo(np.float32).max,
+                        (3,),
+                        dtype=np.float32,
+                    ),
+                }
+            ),
+            MultiBinary(1),
+            Dict(
+                {
+                    "binary": MultiBinary(4),
+                    "continuous": Box(
+                        np.finfo(np.float32).min,
+                        np.finfo(np.float32).max,
+                        (2,),
+                        dtype=np.float32,
+                    ),
+                }
+            ),
+            Dict(
+                {
+                    "binary": MultiBinary(3),
+                    "continuous": Box(
+                        np.finfo(np.float32).min,
+                        np.finfo(np.float32).max,
+                        (1,),
+                        dtype=np.float32,
+                    ),
+                }
+            ),
+            MultiBinary(2),
+            Box(
+                np.finfo(np.float32).min,
+                np.finfo(np.float32).max,
+                (1,),
+                dtype=np.float32,
+            ),
+        ],
+    ]
+
+    multi_discrete_action_spaces = [
+        # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
         [
             Dict(
                 {
@@ -229,7 +290,9 @@ def test_gymnasium_wrapper_action_space():
                 dtype=np.float32,
             ),
         ],
-        # max_button_pressed = 1, binary action space is Discrete(num_binary_buttons + 1)
+    ]
+    # max_button_pressed = 1, binary action space is Discrete(num_binary_buttons + 1)
+    discrete_action_spaces = [
         [
             Dict(
                 {
@@ -364,26 +427,44 @@ def test_gymnasium_wrapper_action_space():
             ),
         ],
     ]
-    for max_button_pressed in range(0, 4):
+
+    for i in range(len(env_configs)):
+        env = VizdoomEnv(
+            config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+            frame_skip=1,
+            max_buttons_pressed=0,
+            use_multi_binary_action_space=True,
+        )
+        _compare_action_spaces(env, multi_binary_action_spaces[i])
+
+        env = VizdoomEnv(
+            config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+            frame_skip=1,
+            max_buttons_pressed=0,
+            use_multi_binary_action_space=False,
+        )
+        _compare_action_spaces(env, multi_discrete_action_spaces[i])
+
+    for max_button_pressed in range(1, 4):
         for i in range(len(env_configs)):
             env = VizdoomEnv(
                 config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
                 frame_skip=1,
                 max_buttons_pressed=max_button_pressed,
             )
-            assert env.action_space == action_spaces[max_button_pressed][i], (
-                f"Incorrect action space: {env.action_space!r}, "
-                f"should be: {action_spaces[max_button_pressed][i]!r}"
+            _compare_action_spaces(
+                env, discrete_action_spaces[max_button_pressed - 1][i]
             )
-            env.reset()
-            # check successful call to step using action_space.sample()
-            sample_action = env.action_space.sample()
-            env.step(sample_action)
 
 
 def _compare_envs(
     env1, env2, env1_name="First", env2_name="Second", seed=1993, compare_screens=True
 ):
+    """
+    Helper function to compare two environments.
+    It checks if the initial observations, actions, and subsequent observations,
+    rewards, termination, truncation, and info are equivalent.
+    """
     # Seed environments
     obs1, _ = env1.reset(seed=seed)
     obs2, _ = env2.reset(seed=seed)
