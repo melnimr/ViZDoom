@@ -71,22 +71,42 @@ def test_gymnasium_wrapper_terminal_state():
     for env_name in vizdoom_envs:
         for frame_skip in [1, 4]:
             env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
-
-            def agent(obs):
-                return env.action_space.sample()
-
             obs = env.reset()
             terminated = False
             truncated = False
             done = terminated or truncated
             while not done:
-                a = agent(obs)
+                a = env.action_space.sample()
                 (obs, _reward, terminated, truncated, _info) = env.step(a)
                 done = terminated or truncated
                 if done:
                     break
-                env.close()
+
             assert env.observation_space.contains(obs)
+            env.close()
+
+
+def test_gymnasium_wrapper_truncated_state():
+    print("Testing Gymnasium wrapper truncated state")
+    env = VizdoomEnv(
+        config_file=os.path.join(
+            test_env_configs, "basic_rgb_idla_0_1.cfg"
+        ),  # For this config it is impossible to get other terminal state than timeout
+        frame_skip=10,  # Using frame_skip=10 to speed up the test
+        max_buttons_pressed=0,
+        treat_episode_timeout_as_truncation=True,
+    )
+    obs = env.reset()
+    terminated = False
+    truncated = False
+    done = terminated or truncated
+    while not done:
+        a = env.action_space.sample()
+        obs, _reward, terminated, truncated, _info = env.step(a)
+        done = terminated or truncated
+        if done:
+            assert truncated
+            env.close()
 
 
 # Testing various observation spaces
@@ -139,7 +159,7 @@ def test_gymnasium_wrapper_obs_space():
 
     for i in range(len(env_configs)):
         env = VizdoomEnv(
-            level=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+            config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
             frame_skip=1,
             max_buttons_pressed=0,
         )
@@ -299,7 +319,7 @@ def test_gymnasium_wrapper_action_space():
             ),
         ],
         # max_button_pressed = 3, binary action space is Discrete(m) m=all combinations
-        # indices=[0,1, 4] should give warning clipping max_buttons_pressed to 1 or 2
+        # indices=[0,1,4] should give warning clipping max_buttons_pressed to 1 or 2
         [
             Dict(
                 {
@@ -347,7 +367,7 @@ def test_gymnasium_wrapper_action_space():
     for max_button_pressed in range(0, 4):
         for i in range(len(env_configs)):
             env = VizdoomEnv(
-                level=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
+                config_file=os.path.join(test_env_configs, env_configs[i] + ".cfg"),
                 frame_skip=1,
                 max_buttons_pressed=max_button_pressed,
             )
@@ -461,6 +481,7 @@ def test_gymnasium_wrapper_seed():
 if __name__ == "__main__":
     test_gymnasium_wrapper()
     test_gymnasium_wrapper_terminal_state()
+    test_gymnasium_wrapper_truncated_state()
     test_gymnasium_wrapper_action_space()
     test_gymnasium_wrapper_obs_space()
     test_gymnasium_wrapper_pickle()
