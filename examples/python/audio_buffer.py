@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 #####################################################################
-# This script presents how to read and use the sound buffer.
+# This script presents how to read and use the audio/sound buffer.
 # This script stores a "basic_sounds.wav" file of recorded audio.
 # Note: This requires scipy library
+#
+# Audio buffer was originally added by [Shashank Hegde](https://github.com/hegde95)
 #####################################################################
 
 import os

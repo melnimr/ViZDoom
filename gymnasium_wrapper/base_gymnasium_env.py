@@ -1,3 +1,13 @@
+"""
+Implementation of the base Gymnasium environment for ViZDoom.
+
+The first version was based on Gym interface by [Simon Hakenes](https://github.com/shakenes/vizdoomgym),
+and developed by [Arjun KG](https://github.com/arjun-kg),
+[Benjamin Noah Beal](https://github.com/bebeal),
+[Lawrence Francis](https://github.com/ldfrancis),
+and [Mark Towers](https://github.com/pseudo-rnd-thoughts).
+"""
+
 import itertools
 import warnings
 from typing import Optional
@@ -36,7 +46,6 @@ class VizdoomEnv(gym.Env, EzPickle):
     ):
         """
         Base class for Gymnasium interface for ViZDoom.
-        Initial version based was based on Gym interface by Simon Hakenes (https://github.com/shakenes/vizdoomgym).
         Child classes are defined in gymnasium_env_defns.py,
 
         Arguments:

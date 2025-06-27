@@ -26,6 +26,13 @@ envs_with_animated_textures = [
     "VizdoomHealthGatheringSupreme",
     "VizdoomDeathmatch",
 ]
+buffers = [
+    "screen",
+    "depth",
+    "labels",
+    "automap",
+    "audio",
+]
 
 
 # Testing with different non-default kwargs (since each has a different obs space)
@@ -40,7 +47,7 @@ def test_gymnasium_wrapper():
             continue
 
         for frame_skip in [1, 4]:
-            env = gymnasium.make(env_name, frame_skip=frame_skip, max_buttons_pressed=0)
+            env = gymnasium.make(env_name, frame_skip=frame_skip)
 
             # Test if env adheres to Gymnasium API
             check_env(env.unwrapped, skip_render_check=True)
@@ -56,6 +63,9 @@ def test_gymnasium_wrapper():
                 observation
             ), f"Step observation: {observation!r} not in space"
             assert np.isscalar(reward), f"{reward} is not a scalar for {env}"
+            assert isinstance(
+                terminated, bool
+            ), f"Expected {terminated} to be a boolean"
             assert isinstance(
                 terminated, bool
             ), f"Expected {terminated} to be a boolean"
@@ -200,97 +210,94 @@ def test_gymnasium_wrapper_action_space():
     ]
     # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
     multi_binary_action_spaces = [
-        [
-            Dict(
-                {
-                    "binary": MultiBinary(1),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (3,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            MultiBinary(1),
-            Dict(
-                {
-                    "binary": MultiBinary(4),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (2,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            Dict(
-                {
-                    "binary": MultiBinary(3),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (1,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            MultiBinary(2),
-            Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (1,),
-                dtype=np.float32,
-            ),
-        ],
+        Dict(
+            {
+                "binary": MultiBinary(1),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (3,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        MultiBinary(1),
+        Dict(
+            {
+                "binary": MultiBinary(4),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (2,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        Dict(
+            {
+                "binary": MultiBinary(3),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (1,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        MultiBinary(2),
+        Box(
+            np.finfo(np.float32).min,
+            np.finfo(np.float32).max,
+            (1,),
+            dtype=np.float32,
+        ),
     ]
 
+    # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
     multi_discrete_action_spaces = [
-        # max_button_pressed = 0, binary action space is MultiBinary or MultiDiscrete
-        [
-            Dict(
-                {
-                    "binary": MultiDiscrete([2]),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (3,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            MultiDiscrete([2]),
-            Dict(
-                {
-                    "binary": MultiDiscrete([2, 2, 2, 2]),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (2,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            Dict(
-                {
-                    "binary": MultiDiscrete([2, 2, 2]),
-                    "continuous": Box(
-                        np.finfo(np.float32).min,
-                        np.finfo(np.float32).max,
-                        (1,),
-                        dtype=np.float32,
-                    ),
-                }
-            ),
-            MultiDiscrete([2, 2]),
-            Box(
-                np.finfo(np.float32).min,
-                np.finfo(np.float32).max,
-                (1,),
-                dtype=np.float32,
-            ),
-        ],
+        Dict(
+            {
+                "binary": MultiDiscrete([2]),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (3,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        MultiDiscrete([2]),
+        Dict(
+            {
+                "binary": MultiDiscrete([2, 2, 2, 2]),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (2,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        Dict(
+            {
+                "binary": MultiDiscrete([2, 2, 2]),
+                "continuous": Box(
+                    np.finfo(np.float32).min,
+                    np.finfo(np.float32).max,
+                    (1,),
+                    dtype=np.float32,
+                ),
+            }
+        ),
+        MultiDiscrete([2, 2]),
+        Box(
+            np.finfo(np.float32).min,
+            np.finfo(np.float32).max,
+            (1,),
+            dtype=np.float32,
+        ),
     ]
+
     # max_button_pressed = 1, binary action space is Discrete(num_binary_buttons + 1)
     discrete_action_spaces = [
         [
@@ -458,7 +465,7 @@ def test_gymnasium_wrapper_action_space():
 
 
 def _compare_envs(
-    env1, env2, env1_name="First", env2_name="Second", seed=1993, compare_screens=True
+    env1, env2, env1_name="First", env2_name="Second", seed=1993, compare_buffers=True
 ):
     """
     Helper function to compare two environments.
@@ -474,18 +481,17 @@ def _compare_envs(
     env2.action_space.seed(seed)
 
     # Compare initial states
-    if not compare_screens:
-        obs1["screen"] = np.zeros_like(obs1["screen"])
-        obs2["screen"] = np.zeros_like(obs2["screen"])
+    if not compare_buffers:
+        if "screen" in obs1:
+            obs1["screen"] = np.zeros_like(obs1["screen"])
+            obs2["screen"] = np.zeros_like(obs2["screen"])
 
     assert data_equivalence(
         obs1, obs2
     ), f"Initial observations incorrect. {env1_name} environment: {obs1}. {env2_name} environment: {obs2}"
 
     # Compare sequance of random actions and states
-    terminated = False
-    truncated = False
-    done = terminated or truncated
+    done = False
     while not done:
         a1 = env1.action_space.sample()
         a2 = env2.action_space.sample()
@@ -496,9 +502,12 @@ def _compare_envs(
         obs1, rew1, term1, trunc1, info1 = env1.step(a1)
         obs2, rew2, term2, trunc2, info2 = env2.step(a2)
 
-        if not compare_screens:
-            obs1["screen"] = np.zeros_like(obs1["screen"])
-            obs2["screen"] = np.zeros_like(obs2["screen"])
+        if not compare_buffers:
+            for buffer in buffers:
+                if buffer in obs1:
+                    obs1[buffer] = np.zeros_like(obs1[buffer])
+                if buffer in obs2:
+                    obs2[buffer] = np.zeros_like(obs2[buffer])
 
         assert data_equivalence(
             obs1, obs2
@@ -516,15 +525,9 @@ def _compare_envs(
             info1, info2
         ), f"Incorrect info: {env1_name} environment: {info1}. {env2_name} environment: {info2}"
 
-        done1 = term1 or trunc1
-        done2 = term2 or trunc2
-        if done1 or done2:
-            assert data_equivalence(
-                done1, done2
-            ), f"Incorrect truncation or termination values. {env1_name} environment: terminated {term1}, truncated {trunc1}. {env2_name} environment: terminated {term2} truncated {trunc2}"
-            break
-        env1.close()
-        env2.close()
+        done = term1 or trunc1 or term2 or trunc2
+    env1.close()
+    env2.close()
 
 
 def test_gymnasium_wrapper_pickle():
@@ -539,7 +542,7 @@ def test_gymnasium_wrapper_pickle():
             env1_name="Original",
             env2_name="Pickled",
             seed=1993,
-            compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
+            compare_buffers=(env_name.split("-")[0] not in envs_with_animated_textures),
         )
 
 
@@ -555,7 +558,7 @@ def test_gymnasium_wrapper_seed():
             env1_name="First",
             env2_name="Second",
             seed=1993,
-            compare_screens=(env_name.split("-")[0] not in envs_with_animated_textures),
+            compare_buffers=(env_name.split("-")[0] not in envs_with_animated_textures),
         )
 
 
