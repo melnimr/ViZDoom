@@ -1,3 +1,13 @@
+"""
+Implementation of the base Gymnasium environment for ViZDoom.
+
+The first version was based on Gym interface by [Simon Hakenes](https://github.com/shakenes/vizdoomgym),
+and developed by [Arjun KG](https://github.com/arjun-kg),
+[Benjamin Noah Beal](https://github.com/bebeal),
+[Lawrence Francis](https://github.com/ldfrancis),
+and [Mark Towers](https://github.com/pseudo-rnd-thoughts).
+"""
+
 import itertools
 import warnings
 from typing import Optional
@@ -32,11 +42,10 @@ class VizdoomEnv(gym.Env, EzPickle):
         max_buttons_pressed: int = 0,
         render_mode: Optional[str] = None,
         treat_episode_timeout_as_truncation: bool = True,
-        use_multi_discrete_action_space: bool = False,
+        use_multi_binary_action_space: bool = True,
     ):
         """
         Base class for Gymnasium interface for ViZDoom.
-        Initial version based was based on Gym interface by Simon Hakenes (https://github.com/shakenes/vizdoomgym).
         Child classes are defined in gymnasium_env_defns.py,
 
         Arguments:
@@ -52,9 +61,13 @@ class VizdoomEnv(gym.Env, EzPickle):
                                        with the number of buttons pressed < ``max_buttons_pressed``.
             render_mode(Optional[str]): The render mode to use could be either "human" or "rgb_array"
             treat_episode_timeout_as_truncation (bool): If True, the episode will be treated as truncated
-                                                        when the internal episode timeout is reached. Default: True.
-            use_multi_discrete_action_space (bool): If True, the MultiDiscrete([2] * len(binary_ uttons)) action space
-                                                    will be used for buttons binary buttons instead of MultiBinary.
+                                                        when the internal episode timeout is reached.
+                                                        This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
+                                                        Default: True.
+            use_multi_binary_action_space (bool): If True, the ``MultiBinary(len(num_binary_buttons))`` action space
+                                                    will be used for buttons binary buttons instead of ``MultiDiscrete([2] * len(num_binary_buttons))``.
+                                                    This is compatibility option, ViZDoom versions <1.3.0 behave as if this was set to False.
+                                                    Default: True.
 
         This environment forces the game window to be hidden. Use :meth:`render` function to see the game.
 
@@ -70,8 +83,9 @@ class VizdoomEnv(gym.Env, EzPickle):
 
         Action space can be a single one of binary/continuous action space, or a ``Dict`` containing both:
 
-        - "binary": Is ``MultiDiscrete([2] * num_binary_buttons)`` if :attr:`max_buttons_pressed` == 0
-          or ``Discrete(num_binary_buttons + 1)`` if :attr:`max_buttons_pressed` >= 1.
+        - "binary": Is ``Discrete(num_binary_buttons + 1)`` if :attr:`max_buttons_pressed` >= 1
+          or ``MultiBinary(len(num_binary_buttons))`` if :attr:`max_buttons_pressed` == 0 and :attr:`use_multi_binary_action_space` is True,
+          or ``MultiDiscrete([2] * num_binary_buttons)`` if :attr:`max_buttons_pressed` == 0 and :attr:`use_multi_binary_action_space` is False,
         - "continuous": Is ``Box(float32.min, float32.max, (num_delta_buttons,), float32)``.
         """
         EzPickle.__init__(
@@ -80,6 +94,7 @@ class VizdoomEnv(gym.Env, EzPickle):
         self.frame_skip = frame_skip
         self.render_mode = render_mode
         self.treat_episode_timeout_as_truncation = treat_episode_timeout_as_truncation
+        self.use_multi_binary_action_space = use_multi_binary_action_space
 
         # init game
         self.game = vzd.DoomGame()
@@ -323,15 +338,20 @@ class VizdoomEnv(gym.Env, EzPickle):
 
     def __get_binary_action_space(self):
         """
-        Return binary action space: either ``Discrete(n)``/``MultiDiscrete([2] * num_binary_buttons)``
+        Return binary action space:
+        ``Discrete(n)`` or ``MultiBinary(num_binary_buttons)`` or ``MultiDiscrete([2] * num_binary_buttons)``
         """
         if self.max_buttons_pressed == 0:
-            button_space = gym.spaces.MultiDiscrete(
-                [
-                    2,
-                ]
-                * self.num_binary_buttons
-            )
+            if self.use_multi_binary_action_space:
+                button_space = gym.spaces.MultiBinary(self.num_binary_buttons)
+            else:
+                button_space = gym.spaces.MultiDiscrete(
+                    [
+                        2,
+                    ]
+                    * self.num_binary_buttons
+                )
+
         else:
             self.button_map = [
                 np.array(list(action))
@@ -356,9 +376,9 @@ class VizdoomEnv(gym.Env, EzPickle):
         """
         Returns action space:
             if both binary and delta buttons defined in the config file, action space will be:
-              ``Dict("binary": MultiDiscrete|Discrete, "continuous", Box)``
+              ``Dict("binary": Discrete|MultiBinary|MultiDiscrete, "continuous", Box)``
             else:
-              action space will be only one of the following ``MultiDiscrete``|``Discrete``|``Box``
+              action space will be only one of the following ``Discrete``|``MultiBinary``|``MultiDiscrete``|``Box``
         """
         if self.num_delta_buttons == 0:
             return self.__get_binary_action_space()

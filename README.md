@@ -13,16 +13,15 @@ ViZDoom is based on [ZDoom](https://zdoom.org) engine to provide the game mechan
 
 ## Features
 - Multi-platform (Linux, macOS, Windows),
-- API for Python and C++,
-- [Gymnasium](https://gymnasium.farama.org/)/Gym environment wrappers (thanks to [Arjun KG](https://github.com/arjun-kg) [Benjamin Noah Beal](https://github.com/bebeal), [Lawrence Francis](https://github.com/ldfrancis), and [Mark Towers](https://github.com/pseudo-rnd-thoughts)),
+- API for Python (including [Gymnasium](https://gymnasium.farama.org/)/Gym wrappers) and C++,
 - Easy-to-create custom scenarios (visual editors, scripting language, and examples available),
 - Async and sync single-player and multiplayer modes,
-- Fast (up to 7000 fps in sync mode, single-threaded),
+- Fast (up to 7000 frames/steps per second in sync mode, single-threaded on a modern CPU),
 - Lightweight (few MBs),
 - Customizable resolution and rendering parameters,
 - Access to the depth buffer (3D vision),
 - Automatic labeling of game objects visible in the frame,
-- Access to the audio buffer (thanks to [Shashank Hegde](https://github.com/hegde95)),
+- Access to the audio buffer (),
 - Access to the list of actors/objects and map geometry,
 - Off-screen rendering,
 - Episodes recording,
@@ -30,7 +29,12 @@ ViZDoom is based on [ZDoom](https://zdoom.org) engine to provide the game mechan
 
 ViZDoom API is **reinforcement learning** friendly (suitable also for learning from demonstration, apprenticeship learning or apprenticeship via inverse reinforcement learning, etc.).
 
-Julia (thanks to [Jun Tian](https://github.com/findmyway)), Lua, and Java bindings are available in other branches but are no longer maintained.
+
+
+
+
+
+Julia bindings (thanks to [Jun Tian](https://github.com/findmyway)), Lua, and Java bindings are available in other branches but are no longer maintained.
 
 
 ## Cite as
@@ -49,7 +53,7 @@ Julia (thanks to [Jun Tian](https://github.com/findmyway)), Lua, and Java bindin
   note    = {The 2022 IEEE Transactions on Games Outstanding Paper Award}
 }
 ```
-or
+or/and
 
 > M. Kempka, M. Wydmuch, G. Runc, J. Toczek & W. Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	([arXiv:1605.02097](http://arxiv.org/abs/1605.02097))
 ```
