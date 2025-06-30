@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--n_envs", type=int, default=1, help="Number of envs")
 args = parser.parse_args()
 seed = 42
-n_episodes = 1000
+n_steps = 1000
 
 # Pick an environment VizdoomCorridor-v0
 envs = gymnasium.make_vec(
@@ -25,12 +25,12 @@ envs = gymnasium.make_vec(
 start = time.time()
 
 observation, info = envs.reset()
-for _ in range(n_episodes):
+for _ in range(n_steps):
     # No learning here, for purposes of benchmarks
     actions = envs.action_space.sample()
     observations, rewards, terminations, truncations, infos = envs.step(actions)
     # env reset here slows it down
     # if terminated or truncated:
     #    observation, info = env.reset()
-print(f"{args.n_envs}  {n_episodes *args.n_envs /round(time.time() - start,1)}")
+print(f"{args.n_envs}  {n_steps *args.n_envs /round(time.time() - start,1)}")
 envs.close()
