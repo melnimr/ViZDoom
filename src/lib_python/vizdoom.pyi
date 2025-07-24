@@ -5,8 +5,8 @@ This file provides type information for static analysis and IDE support.
 For the official documentation, see: https://vizdoom.farama.org/
 """
 
-from enum import Enum
 from typing import List, Optional, Union
+from enum import Enum
 import numpy as np
 
 # ViZDoom Exceptions
@@ -376,15 +376,15 @@ class GameState:
     
     number: int
     tic: int
-    screen_buffer: Optional[np.ndarray[np.unsignedinteger]] # ImageBufferPtr / numpy.uint8[]
-    depth_buffer: Optional[np.ndarray[np.unsignedinteger]]  # ImageBufferPtr / numpy.uint8[]
-    labels_buffer: Optional[np.ndarray[np.unsignedinteger]] # ImageBufferPtr / numpy.uint8[]
-    automap_buffer: Optional[np.ndarray[np.unsignedinteger]]# ImageBufferPtr / numpy.uint8[]
-    audio_buffer: Optional[np.ndarray[np.signedinteger]]    # AudioBufferPtr / numpy.int16[]
-    game_variables: Optional[np.ndarray[np.floating]]       # std::vector<float> / numpy.double[]
-    labels: List[Label]                                     # std::vector<Label> / list
-    objects: List[Object]                                   # Available when objects info enabled
-    sectors: List[Sector]                                   # Available when sectors info enabled
+    screen_buffer: np.ndarray[np.unsignedinteger]             # ImageBufferPtr / numpy.uint8[]
+    depth_buffer: Optional[np.ndarray[np.unsignedinteger]]    # ImageBufferPtr / numpy.uint8[]
+    labels_buffer: Optional[np.ndarray[np.unsignedinteger]]   # ImageBufferPtr / numpy.uint8[]
+    automap_buffer: Optional[np.ndarray[np.unsignedinteger]]  # ImageBufferPtr / numpy.uint8[]
+    audio_buffer: Optional[np.ndarray[np.signedinteger]]      # AudioBufferPtr / numpy.int16[]
+    game_variables: Optional[np.ndarray[np.floating]]         # std::vector<float> / numpy.double[]
+    labels: List[Label]                                       # std::vector<Label> / list
+    objects: List[Object]                                     # Available when objects info enabled
+    sectors: List[Sector]                                     # Available when sectors info enabled
 
 class ServerState:
     """Contains the state of the multiplayer server."""
@@ -1240,7 +1240,6 @@ def sec_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
     ...
 
 # Doom fixed point conversion functions
-
 def doom_fixed_to_float(doom_fixed: Union[int, float]) -> float:
     """
     Converts fixed point numeral to a floating point value.
