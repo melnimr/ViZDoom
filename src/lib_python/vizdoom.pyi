@@ -2,10 +2,6 @@
 ViZDoom Python Type Stubs
 
 This file provides type information for static analysis and IDE support.
-The enum values defined here are for type checking only and may not match
-the actual runtime values in the ViZDoom binary. Always use the values
-from the actual vizdoom library at runtime.
-
 For the official documentation, see: https://vizdoom.farama.org/
 """
 
@@ -55,9 +51,6 @@ class ViZDoomUnexpectedExitException(Exception):
 class Mode(Enum):
     """
     Defines the mode for controlling the game.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     PLAYER = ...
     SPECTATOR = ...
@@ -67,9 +60,6 @@ class Mode(Enum):
 class ScreenFormat(Enum):
     """
     Defines the format of the screen buffer.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     CRCGCB = ...
     RGB24 = ...
@@ -85,9 +75,6 @@ class ScreenFormat(Enum):
 class ScreenResolution(Enum):
     """
     Defines the resolution of the screen buffer.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     RES_160X120 = ...
     RES_200X125 = ...
@@ -129,9 +116,6 @@ class ScreenResolution(Enum):
 class AutomapMode(Enum):
     """
     Defines the automap rendering mode.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     NORMAL = ...
     WHOLE = ...
@@ -141,9 +125,6 @@ class AutomapMode(Enum):
 class GameVariable(Enum):
     """
     Defines available game variables that can be accessed to get information about the game state.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     KILLCOUNT = ...
     ITEMCOUNT = ...
@@ -281,9 +262,6 @@ class GameVariable(Enum):
 class Button(Enum):
     """
     Defines available game buttons/actions that can be used to control the game.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     ATTACK = ...
     USE = ...
@@ -332,9 +310,6 @@ class Button(Enum):
 class SamplingRate(Enum):
     """
     Defines available audio sampling rates.
-    
-    WARNING: These enum values are for type checking only. 
-    Use the actual values from the vizdoom library at runtime.
     """
     SR_11025 = ...
     SR_22050 = ...
@@ -458,7 +433,7 @@ class DoomGame:
         """
         ...
     
-    def replay_episode(self, file_path: str, player: int = ...) -> None:
+    def replay_episode(self, file_path: str, player: int = 0) -> None:
         """
         Replay an episode from a file.
         """
@@ -494,13 +469,13 @@ class DoomGame:
         """
         ...
     
-    def advance_action(self, tics: int = ..., update_state: bool = True) -> None:
+    def advance_action(self, tics: int = 1, update_state: bool = True) -> None:
         """
         Advance the game by a specified number of tics.
         """
         ...
     
-    def make_action(self, action: List[float], tics: int = ...) -> float:
+    def make_action(self, action: List[float], tics: int = 1) -> float:
         """
         Make an action and advance the game.
         """
@@ -687,7 +662,7 @@ class DoomGame:
         """
         ...
     
-    def add_available_button(self, button: Button) -> None:
+    def add_available_button(self, button: Button, max_value: float = -1) -> None:
         """
         Add a button to the available buttons.
         """
@@ -1240,25 +1215,25 @@ class DoomGame:
         ...
 
 # Time conversion functions
-def doom_tics_to_ms(doom_tics: float, fps: int = ...) -> float:
+def doom_tics_to_ms(doom_tics: float, fps: int = 35) -> float:
     """
     Calculates how many tics will be made during given number of milliseconds.
     """
     ...
 
-def ms_to_doom_tics(doom_tics: float, fps: int = ...) -> float:
+def ms_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
     """
     Calculates the number of milliseconds that will pass during specified number of tics.
     """
     ...
 
-def doom_tics_to_sec(doom_tics: float, fps: int = ...) -> float:
+def doom_tics_to_sec(doom_tics: float, fps: int = 35) -> float:
     """
     Calculates how many tics will be made during given number of seconds.
     """
     ...
 
-def sec_to_doom_tics(doom_tics: float, fps: int = ...) -> float:
+def sec_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
     """
     Calculates the number of seconds that will pass during specified number of tics.
     """
