@@ -465,7 +465,7 @@ class DoomGame:
         """
         ...
     
-    def set_action(self, action: List[float]) -> None:
+    def set_action(self, action: object) -> None:
         """
         Set the action for the next tic.
         """
@@ -477,7 +477,7 @@ class DoomGame:
         """
         ...
     
-    def make_action(self, action: List[float], tics: int = 1) -> float:
+    def make_action(self, action: object, tics: int = 1) -> float:
         """
         Make an action and advance the game.
         """
@@ -892,7 +892,7 @@ class DoomGame:
         """
         ...
     
-    def get_last_action(self) -> List[float]:
+    def get_last_action(self) -> list:
         """
         Get the last action performed.
         """
@@ -1243,6 +1243,13 @@ def sec_to_doom_tics(doom_tics: float, fps: int = 35) -> float:
 
 # Doom fixed point conversion functions
 def doom_fixed_to_float(doom_fixed: Union[int, float]) -> float:
+    """
+    Converts fixed point numeral to a floating point value.
+    Doom engine internally use fixed point numbers.
+    """
+    ...
+
+def doom_fixed_to_double(doom_fixed: Union[int, float]) -> float:
     """
     Converts fixed point numeral to a floating point value.
     Doom engine internally use fixed point numbers.
