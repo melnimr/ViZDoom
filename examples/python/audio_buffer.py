@@ -77,6 +77,7 @@ if __name__ == "__main__":
 
             # Gets the state
             state = game.get_state()
+            assert state is not None
 
             audio_buffer = state.audio_buffer
             audio_slices.append(audio_buffer)
