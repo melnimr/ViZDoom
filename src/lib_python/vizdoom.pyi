@@ -1,0 +1,1287 @@
+"""
+ViZDoom Python Type Stubs
+
+This file provides type information for static analysis and IDE support.
+The enum values defined here are for type checking only and may not match
+the actual runtime values in the ViZDoom binary. Always use the values
+from the actual vizdoom library at runtime.
+
+For the official documentation, see: https://vizdoom.farama.org/
+"""
+
+from enum import Enum
+from typing import List, Optional, Union
+import numpy as np
+
+# ViZDoom Exceptions
+class FileDoesNotExistException(Exception):
+    """
+    Means that file specified as part of a configuration does not exist.
+    """
+    ...
+
+class MessageQueueException(Exception):
+    """
+    Means that communication with ViZDoom's instance failed. 
+    Usually, means a problem with permissions or system configuration.
+    """
+    ...
+
+class SharedMemoryException(Exception):
+    """
+    Means that allocation/reading of shared memory failed. 
+    Usually, means a problem with permissions or system configuration.
+    """
+    ...
+
+class ViZDoomErrorException(Exception):
+    """
+    Means that an error in the ViZDoom engine occurred.
+    """
+    ...
+
+class ViZDoomIsNotRunningException(Exception):
+    """
+    Means that called method cannot be used when ViZDoom instance is not running.
+    """
+    ...
+
+class ViZDoomUnexpectedExitException(Exception):
+    """
+    Means that ViZDoom's instance was closed/terminated/killed from the outside.
+    """
+    ...
+
+class Mode(Enum):
+    """
+    Defines the mode for controlling the game.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    PLAYER = ...
+    SPECTATOR = ...
+    ASYNC_PLAYER = ...
+    ASYNC_SPECTATOR = ...
+
+class ScreenFormat(Enum):
+    """
+    Defines the format of the screen buffer.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    CRCGCB = ...
+    RGB24 = ...
+    RGBA32 = ...
+    ARGB32 = ...
+    CBCGCR = ...
+    BGR24 = ...
+    BGRA32 = ...
+    ABGR32 = ...
+    GRAY8 = ...
+    DOOM_256_COLORS8 = ...
+
+class ScreenResolution(Enum):
+    """
+    Defines the resolution of the screen buffer.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    RES_160X120 = ...
+    RES_200X125 = ...
+    RES_200X150 = ...
+    RES_256X144 = ...
+    RES_256X160 = ...
+    RES_256X192 = ...
+    RES_320X180 = ...
+    RES_320X200 = ...
+    RES_320X240 = ...
+    RES_320X256 = ...
+    RES_400X225 = ...
+    RES_400X250 = ...
+    RES_400X300 = ...
+    RES_512X288 = ...
+    RES_512X320 = ...
+    RES_512X384 = ...
+    RES_640X360 = ...
+    RES_640X400 = ...
+    RES_640X480 = ...
+    RES_800X450 = ...
+    RES_800X500 = ...
+    RES_800X600 = ...
+    RES_1024X576 = ...
+    RES_1024X640 = ...
+    RES_1024X768 = ...
+    RES_1280X720 = ...
+    RES_1280X800 = ...
+    RES_1280X960 = ...
+    RES_1280X1024 = ...
+    RES_1400X787 = ...
+    RES_1400X875 = ...
+    RES_1400X1050 = ...
+    RES_1600X900 = ...
+    RES_1600X1000 = ...
+    RES_1600X1200 = ...
+    RES_1920X1080 = ...
+
+class AutomapMode(Enum):
+    """
+    Defines the automap rendering mode.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    NORMAL = ...
+    WHOLE = ...
+    OBJECTS = ...
+    OBJECTS_WITH_SIZE = ...
+
+class GameVariable(Enum):
+    """
+    Defines available game variables that can be accessed to get information about the game state.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    KILLCOUNT = ...
+    ITEMCOUNT = ...
+    SECRETCOUNT = ...
+    FRAGCOUNT = ...
+    DEATHCOUNT = ...
+    HITCOUNT = ...
+    HITS_TAKEN = ...
+    DAMAGECOUNT = ...
+    DAMAGE_TAKEN = ...
+    HEALTH = ...
+    ARMOR = ...
+    DEAD = ...
+    ON_GROUND = ...
+    ATTACK_READY = ...
+    ALTATTACK_READY = ...
+    SELECTED_WEAPON = ...
+    SELECTED_WEAPON_AMMO = ...
+    AMMO0 = ...
+    AMMO1 = ...
+    AMMO2 = ...
+    AMMO3 = ...
+    AMMO4 = ...
+    AMMO5 = ...
+    AMMO6 = ...
+    AMMO7 = ...
+    AMMO8 = ...
+    AMMO9 = ...
+    WEAPON0 = ...
+    WEAPON1 = ...
+    WEAPON2 = ...
+    WEAPON3 = ...
+    WEAPON4 = ...
+    WEAPON5 = ...
+    WEAPON6 = ...
+    WEAPON7 = ...
+    WEAPON8 = ...
+    WEAPON9 = ...
+    POSITION_X = ...
+    POSITION_Y = ...
+    POSITION_Z = ...
+    ANGLE = ...
+    PITCH = ...
+    ROLL = ...
+    VIEW_HEIGHT = ...
+    VELOCITY_X = ...
+    VELOCITY_Y = ...
+    VELOCITY_Z = ...
+    CAMERA_POSITION_X = ...
+    CAMERA_POSITION_Y = ...
+    CAMERA_POSITION_Z = ...
+    CAMERA_ANGLE = ...
+    CAMERA_PITCH = ...
+    CAMERA_ROLL = ...
+    CAMERA_FOV = ...
+    PLAYER_NUMBER = ...
+    PLAYER_COUNT = ...
+    PLAYER1_FRAGCOUNT = ...
+    PLAYER2_FRAGCOUNT = ...
+    PLAYER3_FRAGCOUNT = ...
+    PLAYER4_FRAGCOUNT = ...
+    PLAYER5_FRAGCOUNT = ...
+    PLAYER6_FRAGCOUNT = ...
+    PLAYER7_FRAGCOUNT = ...
+    PLAYER8_FRAGCOUNT = ...
+    PLAYER9_FRAGCOUNT = ...
+    PLAYER10_FRAGCOUNT = ...
+    PLAYER11_FRAGCOUNT = ...
+    PLAYER12_FRAGCOUNT = ...
+    PLAYER13_FRAGCOUNT = ...
+    PLAYER14_FRAGCOUNT = ...
+    PLAYER15_FRAGCOUNT = ...
+    PLAYER16_FRAGCOUNT = ...
+    USER1 = ...
+    USER2 = ...
+    USER3 = ...
+    USER4 = ...
+    USER5 = ...
+    USER6 = ...
+    USER7 = ...
+    USER8 = ...
+    USER9 = ...
+    USER10 = ...
+    USER11 = ...
+    USER12 = ...
+    USER13 = ...
+    USER14 = ...
+    USER15 = ...
+    USER16 = ...
+    USER17 = ...
+    USER18 = ...
+    USER19 = ...
+    USER20 = ...
+    USER21 = ...
+    USER22 = ...
+    USER23 = ...
+    USER24 = ...
+    USER25 = ...
+    USER26 = ...
+    USER27 = ...
+    USER28 = ...
+    USER29 = ...
+    USER30 = ...
+    USER31 = ...
+    USER32 = ...
+    USER33 = ...
+    USER34 = ...
+    USER35 = ...
+    USER36 = ...
+    USER37 = ...
+    USER38 = ...
+    USER39 = ...
+    USER40 = ...
+    USER41 = ...
+    USER42 = ...
+    USER43 = ...
+    USER44 = ...
+    USER45 = ...
+    USER46 = ...
+    USER47 = ...
+    USER48 = ...
+    USER49 = ...
+    USER50 = ...
+    USER51 = ...
+    USER52 = ...
+    USER53 = ...
+    USER54 = ...
+    USER55 = ...
+    USER56 = ...
+    USER57 = ...
+    USER58 = ...
+    USER59 = ...
+    USER60 = ...
+
+class Button(Enum):
+    """
+    Defines available game buttons/actions that can be used to control the game.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    ATTACK = ...
+    USE = ...
+    JUMP = ...
+    CROUCH = ...
+    TURN180 = ...
+    ALTATTACK = ...
+    RELOAD = ...
+    ZOOM = ...
+    SPEED = ...
+    STRAFE = ...
+    MOVE_RIGHT = ...
+    MOVE_LEFT = ...
+    MOVE_BACKWARD = ...
+    MOVE_FORWARD = ...
+    TURN_RIGHT = ...
+    TURN_LEFT = ...
+    LOOK_UP = ...
+    LOOK_DOWN = ...
+    MOVE_UP = ...
+    MOVE_DOWN = ...
+    LAND = ...
+    SELECT_WEAPON1 = ...
+    SELECT_WEAPON2 = ...
+    SELECT_WEAPON3 = ...
+    SELECT_WEAPON4 = ...
+    SELECT_WEAPON5 = ...
+    SELECT_WEAPON6 = ...
+    SELECT_WEAPON7 = ...
+    SELECT_WEAPON8 = ...
+    SELECT_WEAPON9 = ...
+    SELECT_WEAPON0 = ...
+    SELECT_NEXT_WEAPON = ...
+    SELECT_PREV_WEAPON = ...
+    DROP_SELECTED_WEAPON = ...
+    ACTIVATE_SELECTED_ITEM = ...
+    SELECT_NEXT_ITEM = ...
+    SELECT_PREV_ITEM = ...
+    DROP_SELECTED_ITEM = ...
+    LOOK_UP_DOWN_DELTA = ...
+    TURN_LEFT_RIGHT_DELTA = ...
+    MOVE_FORWARD_BACKWARD_DELTA = ...
+    MOVE_LEFT_RIGHT_DELTA = ...
+    MOVE_UP_DOWN_DELTA = ...
+
+class SamplingRate(Enum):
+    """
+    Defines available audio sampling rates.
+    
+    WARNING: These enum values are for type checking only. 
+    Use the actual values from the vizdoom library at runtime.
+    """
+    SR_11025 = ...
+    SR_22050 = ...
+    SR_44100 = ...
+
+class Label:
+    """Represents object labels in the game world with associated properties."""
+    def __init__(self) -> None: ...
+    
+    object_id: int            # unsigned int / int
+    object_name: str          # std::string / str
+    value: int                # uint8_t / int
+    x: int                    # unsigned int / int
+    y: int                    # unsigned int / int
+    width: int                # unsigned int / int
+    height: int               # unsigned int / int
+    object_position_x: float  # double / float
+    object_position_y: float  # double / float
+    object_position_z: float  # double / float
+    object_angle: float       # double / float
+    object_pitch: float       # double / float
+    object_roll: float        # double / float
+    object_velocity_x: float  # double / float
+    object_velocity_y: float  # double / float
+    object_velocity_z: float  # double / float
+
+class Object:
+    """Represents objects in the game world with position and other properties."""
+    def __init__(self) -> None: ...
+    
+    id: int           # unsigned int / int
+    name: str         # std::string / str
+    position_x: float # double / float
+    position_y: float # double / float
+    position_z: float # double / float
+    angle: float      # double / float
+    pitch: float      # double / float
+    roll: float       # double / float
+    velocity_x: float # double / float
+    velocity_y: float # double / float
+    velocity_z: float # double / float
+
+class Line:
+    """Represents line segments in the game world geometry."""
+    def __init__(self) -> None: ...
+    
+    x1: float         # double / float
+    y1: float         # double / float
+    x2: float         # double / float
+    y2: float         # double / float
+    is_blocking: bool # bool / bool
+
+class Sector:
+    """Represents sectors (floor/ceiling areas) in the game world geometry."""
+    def __init__(self) -> None: ...
+    
+    floor_height: float   # double / float
+    ceiling_height: float # double / float
+    lines: List[Line]     # std::vector<Line> / list
+
+class GameState:
+    """Contains the state of the game including screen buffer, game variables, and world geometry."""
+    def __init__(self) -> None: ...
+    
+    number: int
+    tic: int
+    screen_buffer: Optional[np.ndarray[np.unsignedinteger]] # ImageBufferPtr / numpy.uint8[]
+    depth_buffer: Optional[np.ndarray[np.unsignedinteger]]  # ImageBufferPtr / numpy.uint8[]
+    labels_buffer: Optional[np.ndarray[np.unsignedinteger]] # ImageBufferPtr / numpy.uint8[]
+    automap_buffer: Optional[np.ndarray[np.unsignedinteger]]# ImageBufferPtr / numpy.uint8[]
+    audio_buffer: Optional[np.ndarray[np.signedinteger]]    # AudioBufferPtr / numpy.int16[]
+    game_variables: Optional[np.ndarray[np.floating]]       # std::vector<float> / numpy.double[]
+    labels: List[Label]                                     # std::vector<Label> / list
+    objects: List[Object]                                   # Available when objects info enabled
+    sectors: List[Sector]                                   # Available when sectors info enabled
+
+class ServerState:
+    """Contains the state of the multiplayer server."""
+    def __init__(self) -> None: ...
+
+    tic: int                             # unsigned int / int
+    player_count: int                    # unsigned int / int
+    players_in_game: List[bool]          # bool[] / list
+    players_frags: List[int]             # int[] / list
+    players_names: List[str]             # std::string[] / list
+    players_afk: List[bool]              # bool[] / list
+    players_last_action_tic: List[int]   # unsigned int[] / list
+    players_last_kill_tic: List[int]     # unsigned int[] / list
+
+class DoomGame:
+    """
+    DoomGame is the main class for interacting with ViZDoom.
+    """
+    def __init__(self) -> None:
+        """
+        Initialize a new DoomGame instance.
+        """
+        ...
+    
+    def load_config(self, config_file: str) -> None:
+        """
+        Load configuration from a file.
+        """
+        ...
+    
+    def init(self) -> None:
+        """
+        Initialize the game.
+        """
+        ...
+    
+    def close(self) -> None:
+        """
+        Close the game.
+        """
+        ...
+    
+    def new_episode(self, recording_file_path: str = '') -> None:
+        """
+        Start a new episode.
+        """
+        ...
+    
+    def replay_episode(self, file_path: str, player: int = ...) -> None:
+        """
+        Replay an episode from a file.
+        """
+        ...
+    
+    def is_running(self) -> bool:
+        """
+        Check if the game is running.
+        """
+        ...
+    
+    def is_multiplayer_game(self) -> bool:
+        """
+        Check if this is a multiplayer game.
+        """
+        ...
+    
+    def is_recording_episode(self) -> bool:
+        """
+        Check if episode recording is enabled.
+        """
+        ...
+    
+    def is_replaying_episode(self) -> bool:
+        """
+        Check if episode replaying is active.
+        """
+        ...
+    
+    def set_action(self, action: List[float]) -> None:
+        """
+        Set the action for the next tic.
+        """
+        ...
+    
+    def advance_action(self, tics: int = ..., update_state: bool = True) -> None:
+        """
+        Advance the game by a specified number of tics.
+        """
+        ...
+    
+    def make_action(self, action: List[float], tics: int = ...) -> float:
+        """
+        Make an action and advance the game.
+        """
+        ...
+    
+    def get_state(self) -> Optional[GameState]:
+        """
+        Get the current game state.
+        """
+        ...
+    
+    def get_last_reward(self) -> float:
+        """
+        Get the reward from the last action.
+        """
+        ...
+    
+    def get_total_reward(self) -> float:
+        """
+        Get the total reward for the current episode.
+        """
+        ...
+    
+    def is_episode_finished(self) -> bool:
+        """
+        Check if the current episode is finished.
+        """
+        ...
+    
+    def is_new_episode(self) -> bool:
+        """
+        Check if this is a new episode.
+        """
+        ...
+    
+    def is_player_dead(self) -> bool:
+        """
+        Check if the player is dead.
+        """
+        ...
+    
+    def respawn_player(self) -> None:
+        """
+        Respawn the player.
+        """
+        ...
+    
+    def send_game_command(self, command: str) -> None:
+        """
+        Send a command to the game console.
+        """
+        ...
+    
+    def get_mode(self) -> Mode:
+        """
+        Get the current game mode.
+        """
+        ...
+    
+    def set_mode(self, mode: Mode) -> None:
+        """
+        Set the game mode.
+        """
+        ...
+    
+    def get_ticrate(self) -> int:
+        """
+        Get the current ticrate.
+        """
+        ...
+    
+    def set_ticrate(self, ticrate: int) -> None:
+        """
+        Set the ticrate.
+        """
+        ...
+    
+    def set_doom_scenario_path(self, path: str) -> None:
+        """
+        Set the path to the Doom scenario file.
+        """
+        ...
+    
+    def set_doom_map(self, map_name: str) -> None:
+        """
+        Set the Doom map to use.
+        """
+        ...
+    
+    def set_doom_skill(self, skill: int) -> None:
+        """
+        Set the Doom skill level.
+        """
+        ...
+    
+    def set_doom_config_path(self, path: str) -> None:
+        """
+        Set the path to the Doom configuration file.
+        """
+        ...
+    
+    def set_vizdoom_path(self, path: str) -> None:
+        """
+        Set the path to the ViZDoom executable.
+        """
+        ...
+    
+    def set_doom_game_path(self, path: str) -> None:
+        """
+        Set the path to the Doom game executable.
+        """
+        ...
+    
+    def get_available_game_variables(self) -> List[GameVariable]:
+        """
+        Get the list of available game variables.
+        """
+        ...
+    
+    def set_available_game_variables(self, variables: List[GameVariable]) -> None:
+        """
+        Set the available game variables.
+        """
+        ...
+    
+    def add_available_game_variable(self, variable: GameVariable) -> None:
+        """
+        Add a game variable to the available variables.
+        """
+        ...
+    
+    def clear_available_game_variables(self) -> None:
+        """
+        Clear all available game variables.
+        """
+        ...
+    
+    def get_game_variable(self, variable: GameVariable) -> float:
+        """
+        Get the value of a specific game variable.
+        """
+        ...
+    
+    def get_available_game_variables_size(self) -> int:
+        """
+        Get the number of available game variables.
+        """
+        ...
+    
+    # Game arguments methods
+    def set_game_args(self, args: str) -> None:
+        """
+        Sets game arguments.
+        """
+        ...
+    
+    def add_game_args(self, args: str) -> None:
+        """
+        Adds game arguments.
+        """
+        ...
+    
+    def clear_game_args(self) -> None:
+        """
+        Clear all game arguments.
+        """
+        ...
+    
+    def get_game_args(self) -> str:
+        """
+        Get current game arguments.
+        """
+        ...
+    
+    def get_available_buttons(self) -> List[Button]:
+        """
+        Get the list of available buttons.
+        """
+        ...
+    
+    def set_available_buttons(self, buttons: List[Button]) -> None:
+        """
+        Set the available buttons.
+        """
+        ...
+    
+    def add_available_button(self, button: Button) -> None:
+        """
+        Add a button to the available buttons.
+        """
+        ...
+    
+    def clear_available_buttons(self) -> None:
+        """
+        Clear all available buttons.
+        """
+        ...
+    
+    def set_button_max_value(self, button: Button, max_value: float) -> None:
+        """
+        Set the maximum value for a button.
+        """
+        ...
+    
+    def get_button_max_value(self, button: Button) -> float:
+        """
+        Get the maximum value for a button.
+        """
+        ...
+    
+    def get_available_buttons_size(self) -> int:
+        """
+        Get the number of available buttons.
+        """
+        ...
+    
+    def get_button(self, button: Button) -> float:
+        """
+        Get the current value of a specific button.
+        """
+        ...
+    
+    def get_living_reward(self) -> float:
+        """
+        Get the living reward.
+        """
+        ...
+    
+    def set_living_reward(self, reward: float) -> None:
+        """
+        Set the living reward.
+        """
+        ...
+    
+    def get_death_penalty(self) -> float:
+        """
+        Get the death penalty.
+        """
+        ...
+    
+    def set_death_penalty(self, penalty: float) -> None:
+        """
+        Set the death penalty.
+        """
+        ...
+    
+    def get_death_reward(self) -> float:
+        """
+        Get the death reward.
+        """
+        ...
+    
+    def set_death_reward(self, reward: float) -> None:
+        """
+        Set the death reward.
+        """
+        ...
+    
+    def get_map_exit_reward(self) -> float:
+        """
+        Get the map exit reward.
+        """
+        ...
+    
+    def set_map_exit_reward(self, reward: float) -> None:
+        """
+        Set the map exit reward.
+        """
+        ...
+    
+    def get_kill_reward(self) -> float:
+        """
+        Get the kill reward.
+        """
+        ...
+    
+    def set_kill_reward(self, reward: float) -> None:
+        """
+        Set the kill reward.
+        """
+        ...
+    
+    def get_item_reward(self) -> float:
+        """
+        Get the item reward.
+        """
+        ...
+    
+    def set_item_reward(self, reward: float) -> None:
+        """
+        Set the item reward.
+        """
+        ...
+    
+    def get_secret_reward(self) -> float:
+        """
+        Get the secret reward.
+        """
+        ...
+    
+    def set_secret_reward(self, reward: float) -> None:
+        """
+        Set the secret reward.
+        """
+        ...
+    
+    def get_frag_reward(self) -> float:
+        """
+        Get the frag reward.
+        """
+        ...
+    
+    def set_frag_reward(self, reward: float) -> None:
+        """
+        Set the frag reward.
+        """
+        ...
+    
+    def get_hit_reward(self) -> float:
+        """
+        Get the hit reward.
+        """
+        ...
+    
+    def set_hit_reward(self, reward: float) -> None:
+        """
+        Set the hit reward.
+        """
+        ...
+    
+    def get_hit_taken_reward(self) -> float:
+        """
+        Get the hit taken reward.
+        """
+        ...
+    
+    def set_hit_taken_reward(self, reward: float) -> None:
+        """
+        Set the hit taken reward.
+        """
+        ...
+    
+    def get_hit_taken_penalty(self) -> float:
+        """
+        Get the hit taken penalty.
+        """
+        ...
+    
+    def set_hit_taken_penalty(self, penalty: float) -> None:
+        """
+        Set the hit taken penalty.
+        """
+        ...
+    
+    def get_damage_made_reward(self) -> float:
+        """
+        Get the damage made reward.
+        """
+        ...
+    
+    def set_damage_made_reward(self, reward: float) -> None:
+        """
+        Set the damage made reward.
+        """
+        ...
+    
+    def get_damage_taken_reward(self) -> float:
+        """
+        Get the damage taken reward.
+        """
+        ...
+    
+    def set_damage_taken_reward(self, reward: float) -> None:
+        """
+        Set the damage taken reward.
+        """
+        ...
+    
+    def get_damage_taken_penalty(self) -> float:
+        """
+        Get the damage taken penalty.
+        """
+        ...
+    
+    def set_damage_taken_penalty(self, penalty: float) -> None:
+        """
+        Set the damage taken penalty.
+        """
+        ...
+    
+    def get_health_reward(self) -> float:
+        """
+        Get the health reward.
+        """
+        ...
+    
+    def set_health_reward(self, reward: float) -> None:
+        """
+        Set the health reward.
+        """
+        ...
+    
+    def get_armor_reward(self) -> float:
+        """
+        Get the armor reward.
+        """
+        ...
+    
+    def set_armor_reward(self, reward: float) -> None:
+        """
+        Set the armor reward.
+        """
+        ...
+    
+    def get_last_action(self) -> List[float]:
+        """
+        Get the last action performed.
+        """
+        ...
+    
+    def get_episode_timeout(self) -> int:
+        """
+        Get the episode timeout.
+        """
+        ...
+    
+    def set_episode_timeout(self, timeout: int) -> None:
+        """
+        Set the episode timeout.
+        """
+        ...
+    
+    def get_episode_start_time(self) -> int:
+        """
+        Get the episode start time.
+        """
+        ...
+    
+    def set_episode_start_time(self, time: int) -> None:
+        """
+        Set the episode start time.
+        """
+        ...
+    
+    def get_episode_time(self) -> int:
+        """
+        Get the current episode time.
+        """
+        ...
+    
+    def is_episode_timeout_reached(self) -> bool:
+        """
+        Check if the current episode is in the terminal state due to exceeding timeout.
+        """
+        ...
+    
+    def get_server_state(self) -> Optional[ServerState]:
+        """
+        Get the current server state.
+        """
+        ...
+    
+    def save(self, file_path: str) -> None:
+        """
+        Save the game state to a file.
+        """
+        ...
+    
+    def load(self, file_path: str) -> None:
+        """
+        Load the game state from a file.
+        """
+        ...
+    
+    def set_console_enabled(self, console: bool) -> None:
+        """
+        Enable or disable console.
+        """
+        ...
+    
+    def set_sound_enabled(self, sound: bool) -> None:
+        """
+        Enable or disable sound.
+        """
+        ...
+    
+    def is_audio_buffer_enabled(self) -> bool:
+        """
+        Check if audio buffer is enabled.
+        """
+        ...
+    
+    def set_audio_buffer_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable audio buffer.
+        """
+        ...
+    
+    def get_audio_sampling_rate(self) -> SamplingRate:
+        """
+        Get the audio sampling rate.
+        """
+        ...
+    
+    def set_audio_sampling_rate(self, rate: SamplingRate) -> None:
+        """
+        Set the audio sampling rate.
+        """
+        ...
+    
+    def get_audio_buffer_size(self) -> int:
+        """
+        Get the audio buffer size.
+        """
+        ...
+    
+    def set_audio_buffer_size(self, size: int) -> None:
+        """
+        Set the audio buffer size.
+        """
+        ...
+    
+    def is_depth_buffer_enabled(self) -> bool:
+        """
+        Check if depth buffer is enabled.
+        """
+        ...
+    
+    def set_depth_buffer_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable depth buffer.
+        """
+        ...
+    
+    def is_labels_buffer_enabled(self) -> bool:
+        """
+        Check if labels buffer is enabled.
+        """
+        ...
+    
+    def set_labels_buffer_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable labels buffer.
+        """
+        ...
+    
+    def is_automap_buffer_enabled(self) -> bool:
+        """
+        Check if automap buffer is enabled.
+        """
+        ...
+    
+    def set_automap_buffer_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable automap buffer.
+        """
+        ...
+    
+    def set_automap_mode(self, mode: AutomapMode) -> None:
+        """
+        Set the automap mode.
+        """
+        ...
+    
+    def set_automap_rotate(self, rotate: bool) -> None:
+        """
+        Set automap rotation.
+        """
+        ...
+    
+    def set_automap_render_textures(self, textures: bool) -> None:
+        """
+        Set automap texture rendering.
+        """
+        ...
+    
+    def set_render_hud(self, hud: bool) -> None:
+        """
+        Set HUD rendering.
+        """
+        ...
+    
+    def set_render_minimal_hud(self, hud: bool) -> None:
+        """
+        Set minimal HUD rendering.
+        """
+        ...
+    
+    def set_render_crosshair(self, crosshair: bool) -> None:
+        """
+        Set crosshair rendering.
+        """
+        ...
+    
+    def set_render_weapon(self, weapon: bool) -> None:
+        """
+        Set weapon rendering.
+        """
+        ...
+    
+    def set_render_decals(self, decals: bool) -> None:
+        """
+        Set decals rendering.
+        """
+        ...
+    
+    def set_render_particles(self, particles: bool) -> None:
+        """
+        Set particles rendering.
+        """
+        ...
+    
+    def set_render_effects_sprites(self, sprites: bool) -> None:
+        """
+        Set effects sprites rendering.
+        """
+        ...
+    
+    def set_render_messages(self, messages: bool) -> None:
+        """
+        Set messages rendering.
+        """
+        ...
+    
+    def set_render_corpses(self, corpses: bool) -> None:
+        """
+        Set corpses rendering.
+        """
+        ...
+    
+    def set_render_screen_flashes(self, flashes: bool) -> None:
+        """
+        Set screen flashes rendering.
+        """
+        ...
+    
+    def set_render_all_frames(self, all_frames: bool) -> None:
+        """
+        Set all frames rendering.
+        """
+        ...
+    
+    def get_screen_format(self) -> ScreenFormat:
+        """
+        Get the screen format.
+        """
+        ...
+    
+    def set_screen_format(self, format: ScreenFormat) -> None:
+        """
+        Set the screen format.
+        """
+        ...
+    
+    def get_screen_resolution(self) -> ScreenResolution:
+        """
+        Get the screen resolution.
+        """
+        ...
+    
+    def set_screen_resolution(self, resolution: ScreenResolution) -> None:
+        """
+        Set the screen resolution.
+        """
+        ...
+    
+    def get_screen_width(self) -> int:
+        """
+        Get the screen width.
+        """
+        ...
+    
+    def get_screen_height(self) -> int:
+        """
+        Get the screen height.
+        """
+        ...
+    
+    def get_screen_channels(self) -> int:
+        """
+        Get the number of screen channels.
+        """
+        ...
+    
+    def get_screen_pitch(self) -> int:
+        """
+        Get the screen pitch.
+        """
+        ...
+    
+    def get_screen_size(self) -> int:
+        """
+        Get the screen size in bytes.
+        """
+        ...
+    
+    def set_window_visible(self, visible: bool) -> None:
+        """
+        Set window visibility.
+        """
+        ...
+    
+    def is_objects_info_enabled(self) -> bool:
+        """
+        Check if objects info is enabled.
+        """
+        ...
+    
+    def set_objects_info_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable objects info.
+        """
+        ...
+    
+    def is_sectors_info_enabled(self) -> bool:
+        """
+        Check if sectors info is enabled.
+        """
+        ...
+    
+    def set_sectors_info_enabled(self, enabled: bool) -> None:
+        """
+        Enable or disable sectors info.
+        """
+        ...
+    
+    def get_seed(self) -> int:
+        """
+        Get the random seed.
+        """
+        ...
+    
+    def set_seed(self, seed: int) -> None:
+        """
+        Set the random seed.
+        """
+        ...
+
+# Time conversion functions
+def doom_tics_to_ms(doom_tics: float, fps: int = ...) -> float:
+    """
+    Calculates how many tics will be made during given number of milliseconds.
+    """
+    ...
+
+def ms_to_doom_tics(doom_tics: float, fps: int = ...) -> float:
+    """
+    Calculates the number of milliseconds that will pass during specified number of tics.
+    """
+    ...
+
+def doom_tics_to_sec(doom_tics: float, fps: int = ...) -> float:
+    """
+    Calculates how many tics will be made during given number of seconds.
+    """
+    ...
+
+def sec_to_doom_tics(doom_tics: float, fps: int = ...) -> float:
+    """
+    Calculates the number of seconds that will pass during specified number of tics.
+    """
+    ...
+
+# Doom fixed point conversion functions
+
+def doom_fixed_to_float(doom_fixed: Union[int, float]) -> float:
+    """
+    Converts fixed point numeral to a floating point value.
+    Doom engine internally use fixed point numbers.
+    """
+    ...
+
+# Button functions
+def is_binary_button(button: Button) -> bool:
+    """
+    Returns True if Button is binary button.
+    """
+    ...
+
+def is_delta_button(button: Button) -> bool:
+    """
+    Returns True if Button is delta button.
+    """
+    ...
