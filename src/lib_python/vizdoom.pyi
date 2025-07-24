@@ -48,6 +48,7 @@ class ViZDoomUnexpectedExitException(Exception):
     """
     ...
 
+# ViZDoom Enums
 class Mode(Enum):
     """
     Defines the mode for controlling the game.
@@ -315,6 +316,7 @@ class SamplingRate(Enum):
     SR_22050 = ...
     SR_44100 = ...
 
+# ViZDoom Classes
 class Label:
     """Represents object labels in the game world with associated properties."""
     def __init__(self) -> None: ...
