@@ -39,5 +39,5 @@ if __name__ == "__main__":
         # no need for env.reset() here since the default is AutoReset(https://farama.org/Vector-Autoreset-Mode)
         # if terminated or truncated:
         #    observation, info = env.reset()
-    print(f"{args.n_envs}  {n_steps *args.n_envs / round(time.time() - start,1)}")
+    print(f"{args.n_envs}  {n_steps * args.n_envs / round(time.time() - start, 1)}")
     envs.close()
