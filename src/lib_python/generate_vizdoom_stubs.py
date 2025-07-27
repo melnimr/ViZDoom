@@ -53,7 +53,7 @@ class ViZDoomStubGenerator:
     def generate_with_stubgen(self):
         """Generate basic type stubs using stubgen."""
         if self.verbose:
-            print("🔧 Generating type stubs with stubgen...")
+            print("Generating type stubs with stubgen...")
 
         # Add module directory to Python path if provided
         env: dict[str, str] = os.environ.copy()
@@ -61,7 +61,7 @@ class ViZDoomStubGenerator:
             print("module", self.module)
             module_path = self.module
             if self.verbose:
-                print(f"📁 Adding {module_path} to PYTHONPATH")
+                print(f"Adding {module_path} to PYTHONPATH")
             current_path = env.get("PYTHONPATH", "")
             pathsep = os.pathsep
             paths = current_path.split(pathsep) if current_path else []
@@ -95,7 +95,7 @@ class ViZDoomStubGenerator:
                 )
 
         except subprocess.CalledProcessError as e:
-            print(f"❌ Stubgen failed: {e}")
+            print(f"Stubgen failed: {e}")
             print(f"STDOUT: {e.stdout}")
             print(f"STDERR: {e.stderr}")
             raise
@@ -106,12 +106,12 @@ class ViZDoomStubGenerator:
         try:
             for tool in ["black", "isort"]:
                 if self.verbose:
-                    print(f"🧹 Reformatting type stubs with {tool}...")
+                    print(f"Reformatting type stubs with {tool}...")
                 cmd = [tool, os.path.join(self.temp_dir, "vizdoom.pyi")]
                 subprocess.run(cmd, capture_output=True, text=True, check=True)
                 finished_formatting.append(tool)
         except subprocess.CalledProcessError as e:
-            print(f"❌ {tool} failed: {e}")
+            print(f"{tool} failed: {e}")
             print(f"STDOUT: {e.stdout}")
             print(f"STDERR: {e.stderr}")
         return finished_formatting
@@ -119,7 +119,7 @@ class ViZDoomStubGenerator:
     def load_generated_stub(self) -> str:
         """Reformat generated type stubs with black."""
         if self.verbose:
-            print("📖 Loading generated type stubs...")
+            print("Loading generated type stubs...")
         stub_file = os.path.join(self.temp_dir, "vizdoom.pyi")
         if os.path.exists(stub_file):
             with open(stub_file, "r") as f:
@@ -133,7 +133,7 @@ class ViZDoomStubGenerator:
     def add_module_header(self, content: str, formatted_with: list[str]) -> str:
         """Add a module header."""
         if self.verbose:
-            print("📝 Adding module header...")
+            print("Adding module header...")
         if formatted_with:
             formatted = f" and formatted with {', '.join(formatted_with)}"
         else:
@@ -143,7 +143,7 @@ class ViZDoomStubGenerator:
     def annotate_gamestate_properties(self, content: str) -> str:
         """Additional treatment for properties of GameState."""
         if self.verbose:
-            print("📝 Annotating properties of the GameState class...", end=" ")
+            print("Annotating properties of the GameState class...", end=" ")
         replacements = []
         match_game_state_properties = re.finditer(
             r"^(\s*def (screen|depth|audio|automap|labels|game)_"
@@ -172,7 +172,7 @@ class ViZDoomStubGenerator:
     def generate(self) -> str:
         """Generate complete type stubs with docstrings."""
         if self.verbose:
-            print("🚀 Starting ViZDoom stub generation...")
+            print("Starting ViZDoom stub generation...")
 
         try:
             # Step 1: Generate basic stubs with stubgen
@@ -201,13 +201,13 @@ class ViZDoomStubGenerator:
 
             if self.verbose:
                 print(
-                    f"✅ Generated {self.output_file} ({len(stub_content.splitlines())} lines)"
+                    f"Generated {self.output_file} ({len(stub_content.splitlines())} lines)"
                 )
 
             return stub_content
 
         except Exception as e:
-            print(f"❌ Stub generation failed: {e}")
+            print(f"Stub generation failed: {e}")
             raise
         finally:
             # Cleanup temp directory
@@ -245,8 +245,8 @@ def main():
 
         assert pybind11_stubgen
         generator.generate()
-        print("🎉 Successfully generated ViZDoom type stubs!")
-        print(f"📁 Output: {args.output}")
+        print("Successfully generated ViZDoom type stubs!")
+        print(f"Output: {args.output}")
         if args.patch:
             import vizdoom
 
@@ -258,18 +258,18 @@ def main():
             )
             with open(os.path.join(vizdoom_loc, "py.typed"), "w") as f:
                 f.write("partial\n")
-            print(f"🩹 Patched ViZDoom at: {vizdoom_loc}")
-            print(f"✨ Enjoy your type-hinted ViZDoom!")
+            print(f"Patched ViZDoom at: {vizdoom_loc}")
+            print(f"Enjoy your type-hinted ViZDoom!")
         return 0
     except ImportError:
         print(
-            f"💥 Need to install pybind11-stubgen via:\npip install pybind11-stubgen\n"
+            f"Need to install pybind11-stubgen via:\npip install pybind11-stubgen\n"
         )
         print(
             "Optionally also install black and isort for formatting:\npip install black isort\n"
         )
     except Exception as e:
-        print(f"💥 Failed to generate stubs: {e}")
+        print(f"Failed to generate stubs: {e}")
     return 1
 
 
