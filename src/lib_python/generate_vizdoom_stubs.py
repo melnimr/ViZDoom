@@ -2,18 +2,15 @@
 """
 Automated ViZDoom Type Stub Generator
 
-This script integrates stubgen with ViZDoom's documentation system to generate
-comprehensive .pyi files with proper type annotations and docstrings.
+This script uses pybind11-stubgen to generate stub file for ViZDoom, part of build target `generate_stubs`.
 
 Workflow:
-1. Use stubgen to generate basic type stubs from compiled module
-2. Merge in docstrings from existing documentation system"
-3. Fix enum annotation issues for mypy/flake8 compliance
-4. Format output according to flake8 standards
-5. Validate with stubtest
-
-Usage:
-    python scripts/generate_vizdoom_stubs.py [--output OUTPUT_FILE] [--validate]
+- using `pybind11-stubgen` for generation
+- removing the `__all__ = ...` line
+- adding `import numpy as np` after `import typing`
+- optionally, `black` and `isort` for simple formatting
+- adding a header comment
+- replacing the `-> typing.Any` properties with actual return behaviour (`np.ndarray` or `typing.Optional[np.ndarray]`)
 """
 
 import argparse
