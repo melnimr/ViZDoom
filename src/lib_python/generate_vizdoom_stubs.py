@@ -256,6 +256,8 @@ def main():
                 os.path.join(vizdoom_loc, "vizdoom.pyi"),
                 follow_symlinks=False,
             )
+            with open(os.path.join(vizdoom_loc, "py.typed"), "w") as f:
+                f.write("partial\n")
             print(f"🩹 Patched ViZDoom at: {vizdoom_loc}")
             print(f"✨ Enjoy your type-hinted ViZDoom!")
         return 0
