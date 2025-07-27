@@ -101,13 +101,14 @@ set_target_properties(assemble_package
 # vizdoom, vizdoom.pk3 are needed to assemble the package
 add_dependencies(assemble_package libvizdoom_python vizdoom pk3)
 
-# Generate type stubs using pybind11-stubgen and copy vizdoom.pyi & py.typed to the package (no generate_vizdoom_stubs.py)
-add_custom_target(generate_stubs ALL
-    COMMAND ${Python_EXECUTABLE} ${VIZDOOM_PYTHON_SRC_DIR}/generate_vizdoom_stubs.py --output ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi --verbose --module ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom DEPENDS libvizdoom_python
-    COMMAND ${CMAKE_COMMAND} -E copy ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi ${VIZDOOM_PYTHON_PACKAGE_DIR}
-    COMMAND ${CMAKE_COMMAND} -E copy ${VIZDOOM_PYTHON_SRC_DIR}/py.typed ${VIZDOOM_PYTHON_PACKAGE_DIR}
-    COMMENT "Generating ViZDoom type stubs with pybind11-stubgen for python typing support"
-)
-
-# Ensure stubs are generated before package assembly
-add_dependencies(generate_stubs assemble_package)
+# Generate type stubs using pybind11-stubgen and copy vizdoom.pyi & py.typed to the package
+if (CREATE_PYTHON_STUBS)
+    add_custom_target(generate_stubs ALL
+        COMMAND ${Python_EXECUTABLE} ${VIZDOOM_PYTHON_SRC_DIR}/generate_vizdoom_stubs.py --output ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi --verbose --module ${VIZDOOM_PYTHON_OUTPUT_DIR}/vizdoom
+        COMMAND ${CMAKE_COMMAND} -E copy ${VIZDOOM_PYTHON_SRC_DIR}/vizdoom.pyi ${VIZDOOM_PYTHON_PACKAGE_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${VIZDOOM_PYTHON_SRC_DIR}/py.typed ${VIZDOOM_PYTHON_PACKAGE_DIR}
+        COMMENT "Generating ViZDoom type stubs with pybind11-stubgen for python typing support"
+    )
+    # Ensure stubs are generated after package assembly
+    add_dependencies(generate_stubs assemble_package)
+endif()
