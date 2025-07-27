@@ -99,7 +99,7 @@ You can download Boost from [here](https://www.boost.org/users/download).
 
 ## Building Python Type Stubs (`vizdoom.pyi`)
 
-To enable typing support, we have added the creation of Python Interface file `vizdoom.pyi` into the building pipeline.
+To enable Python typing support, the creation of a Python Interface file `vizdoom.pyi` is now part of the building pipeline.
 
 To ensure `vizdoom.pyi` is properly created, the following dependencies are required:
 * pybind11-stubgen
