@@ -13,8 +13,8 @@ set(ViZDoom_VERSION_ID ${ViZDoom_VERSION_MAJOR}${ViZDoom_VERSION_MINOR}${ViZDoom
 #-----------------------------------------------------------------------------------------------------------------------
 
 option(BUILD_PYTHON "Build ViZDoom Python (3) binding/module" ON)
-option(CREATE_PYTHON_STUBS "Build ViZDoom Python (3) .pyi type stubs" ON)
 option(BUILD_ENGINE "Build ViZDoom Engine (required to build Python package)" ON)
+option(CREATE_PYTHON_STUBS "Build ViZDoom Python (3) .pyi type stubs" OFF)
 
 
 # CMake options

@@ -161,11 +161,11 @@ In ViZDoom's root directory:
 ```bash
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON -DCREATE_PYTHON_STUBS=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON -DCREATE_PYTHON_STUBS=OFF
 make
 ```
 
-where `-DBUILD_ENGINE=ON`, `-DBUILD_PYTHON=ON` and `-DCREATE_PYTHON_STUBS=ON` CMake options are optional (default ON). Setting `-DCREATE_PYTHON_STUBS=OFF` will skip the creation of `vizdoom.pyi`.
+where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON`  CMake options are optional (default ON). Setting `-DCREATE_PYTHON_STUBS=OFF` will skip the creation of `vizdoom.pyi` (which is OFF by default).
 
 
 ### Windows
@@ -177,7 +177,7 @@ where `-DBUILD_ENGINE=ON`, `-DBUILD_PYTHON=ON` and `-DCREATE_PYTHON_STUBS=ON` CM
 * PYTHON_LIBRARY (optional, for Python/Anaconda bindings)
 * ZDoom dependencies paths
 
-1. In configuration select `DBUILD_ENGINE`, `DBUILD_PYTHON` and `DCREATE_PYTHON_STUBS` (optional, default ON).
+1. In configuration select `DBUILD_ENGINE`, `DBUILD_PYTHON` (optional, default ON) and `DCREATE_PYTHON_STUBS` (optional, default OFF).
 
 2. Use generated Visual Studio solution to build all parts of ViZDoom environment.
 

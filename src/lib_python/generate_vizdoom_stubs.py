@@ -16,6 +16,7 @@ Workflow:
 import argparse
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -81,7 +82,9 @@ class ViZDoomStubGenerator:
                     stub_content = []
                     for line in f:
                         if line.startswith("import typing"):
-                            stub_content += "import typing\nimport numpy as np\n"
+                            stub_content += (
+                                "import typing\nfrom numpy.typing import NDArray\n"
+                            )
                         elif not line.startswith("__all__ = "):
                             stub_content += line
                 with open(stub_file, "w", encoding="utf-8", errors="ignore") as f:
@@ -150,9 +153,9 @@ class ViZDoomStubGenerator:
         )
         for match_property in match_game_state_properties:
             if match_property.group(2) == "screen":
-                return_type = "np.ndarray"
+                return_type = "NDArray"
             else:
-                return_type = match_property.group(3) + "Optional[np.ndarray]"
+                return_type = match_property.group(3) + "Optional[NDArray]"
             actual_return_type = (
                 match_property.group(1) + return_type + match_property.group(4)
             )
@@ -208,8 +211,6 @@ class ViZDoomStubGenerator:
             raise
         finally:
             # Cleanup temp directory
-            import shutil
-
             shutil.rmtree(self.temp_dir, ignore_errors=True)
 
 
@@ -217,30 +218,57 @@ def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Generate ViZDoom type stubs")
     parser.add_argument(
-        "--output",
         "-o",
+        "--output",
         default="src/lib_python/vizdoom.pyi",
         help="Output file path (default: src/lib_python/vizdoom.pyi)",
     )
     parser.add_argument(
-        "--module",
         "-m",
+        "--module",
         default="vizdoom",
         help="Directory containing vizdoom module (default: vizdoom)",
     )
-    parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
+    parser.add_argument(
+        "-p",
+        "--patch",
+        action="store_true",
+        help="Patch ViZDoom library in current environment",
+    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     args = parser.parse_args()
 
     generator = ViZDoomStubGenerator(args.output, args.verbose, args.module)
     try:
+        import pybind11_stubgen
+
+        assert pybind11_stubgen
         generator.generate()
         print("🎉 Successfully generated ViZDoom type stubs!")
         print(f"📁 Output: {args.output}")
+        if args.patch:
+            import vizdoom
+
+            vizdoom_loc = os.path.dirname(vizdoom.__file__)
+            shutil.copyfile(
+                args.output,
+                os.path.join(vizdoom_loc, "vizdoom.pyi"),
+                follow_symlinks=False,
+            )
+            print(f"🩹 Patched ViZDoom at: {vizdoom_loc}")
+            print(f"✨ Enjoy your type-hinted ViZDoom!")
         return 0
+    except ImportError:
+        print(
+            f"💥 Need to install pybind11-stubgen via:\npip install pybind11-stubgen\n"
+        )
+        print(
+            "Optionally also install black and isort for formatting:\npip install black isort\n"
+        )
     except Exception as e:
-        print(f"\n💥 Failed to generate stubs: {e}")
-        return 1
+        print(f"💥 Failed to generate stubs: {e}")
+    return 1
 
 
 if __name__ == "__main__":
