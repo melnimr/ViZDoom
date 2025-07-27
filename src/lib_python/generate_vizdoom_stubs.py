@@ -55,20 +55,26 @@ class ViZDoomStubGenerator:
             print("🔧 Generating type stubs with stubgen...")
 
         # Add module directory to Python path if provided
-        env = os.environ.copy()
-        if self.module != "vizdoom" and os.path.isdir(self.module):
+        env: dict[str, str] = os.environ.copy()
+        if os.path.isdir(self.module):
+            print("module", self.module)
+            module_path = self.module
             if self.verbose:
-                print(f"📁 Adding {self.module} to PYTHONPATH")
+                print(f"📁 Adding {module_path} to PYTHONPATH")
             current_path = env.get("PYTHONPATH", "")
-            env["PYTHONPATH"] = (
-                f"{self.module}:{current_path}" if current_path else self.module
-            )
+            pathsep = os.pathsep
+            paths = current_path.split(pathsep) if current_path else []
+            if module_path not in paths:
+                paths.insert(0, module_path)
+                env["PYTHONPATH"] = pathsep.join(paths)
 
         # Run stubgen on the compiled vizdoom module
         cmd = ["pybind11-stubgen", "vizdoom", "-o", self.temp_dir]
 
         try:
             subprocess.run(cmd, capture_output=True, text=True, check=True, env=env)
+            if not os.path.exists(os.path.join(self.temp_dir, "vizdoom.pyi")):
+                self.temp_dir = os.path.join(self.temp_dir, "vizdoom")
             stub_file = os.path.join(self.temp_dir, "vizdoom.pyi")
             if os.path.exists(stub_file):
                 with open(stub_file, "r", encoding="utf-8", errors="ignore") as f:
@@ -172,7 +178,7 @@ class ViZDoomStubGenerator:
             # Step 2: Reformat stub file with black & isort
             formatted_with = self.reformat_generated_stub()
 
-            # Step 3: Load stub file
+            # Step 3: Load stub filex
             stub_content = self.load_generated_stub()
 
             # Step 4: Add module header
