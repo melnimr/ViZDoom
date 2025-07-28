@@ -29,7 +29,15 @@ package_path = os.path.join(package_root, "vizdoom")
 packages = ["vizdoom"]
 shutil.rmtree(package_path, ignore_errors=True)
 os.makedirs(package_path, exist_ok=True)
-package_data = ["__init__.py", "bots.cfg", "freedoom2.wad", "vizdoom.pk3"]
+package_data = [
+    "__init__.py",
+    "generate_vizdoom_stubs.py",
+    "vizdoom.pyi",
+    "py.typed",
+    "bots.cfg",
+    "freedoom2.wad",
+    "vizdoom.pk3",
+]
 
 
 # Add subpackages

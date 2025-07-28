@@ -80,6 +80,12 @@ To get all the dependencies install [homebrew](https://brew.sh/) first, than exe
 brew install cmake boost sdl2 openal-soft
 ```
 
+⚠️ On Apple Silicon (M1, M2, M3 and M4), make sure you are using homebrew for `arm64`.
+
+Here is a helpful command to set up the environment variables for homebrew on Apple Silicon if both `arm64` and `x86` versions were installed:
+```sh
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
 
 ### Windows
 * CMake 3.12+
@@ -91,6 +97,23 @@ Additionally, [ZDoom dependencies](http://zdoom.org/wiki/Compile_ZDoom_on_Window
 Most of them (except Boost) are gathered in this repository: [ViZDoomWinDepBin](https://github.com/mwydmuch/ViZDoomWinDepBin).
 You can download Boost from [here](https://www.boost.org/users/download).
 
+## Building Python Type Stubs (`vizdoom.pyi`)
+
+To enable Python typing support, the creation of a Python Interface file `vizdoom.pyi` is now part of the build process.
+
+To ensure `vizdoom.pyi` is properly created, the following dependencies are required:
+* pybind11-stubgen
+* black (optional)
+* isort (optional)
+
+They can all be installed via pip:
+```sh
+pip install pybind11-stubgen black isort
+```
+To test the generated stub manually:
+```
+stubtest vizdoom --allowlist stubtest_allowlists.txt
+```
 
 ## Building via pip (recommended for Python users)
 
@@ -138,11 +161,11 @@ In ViZDoom's root directory:
 ```bash
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_ENGINE=ON -DBUILD_PYTHON=ON -DCREATE_PYTHON_STUBS=OFF
 make
 ```
 
-where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (default ON).
+where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON`  CMake options are optional (default ON). Setting `-DCREATE_PYTHON_STUBS=OFF` will skip the creation of `vizdoom.pyi` (which is OFF by default).
 
 
 ### Windows
@@ -154,9 +177,9 @@ where `-DBUILD_ENGINE=ON` and `-DBUILD_PYTHON=ON` CMake options are optional (de
 * PYTHON_LIBRARY (optional, for Python/Anaconda bindings)
 * ZDoom dependencies paths
 
-2. In configuration select `DBUILD_ENGINE` and `DBUILD_PYTHON` (optional, default ON).
+1. In configuration select `DBUILD_ENGINE`, `DBUILD_PYTHON` (optional, default ON) and `DCREATE_PYTHON_STUBS` (optional, default OFF).
 
-3. Use generated Visual Studio solution to build all parts of ViZDoom environment.
+2. Use generated Visual Studio solution to build all parts of ViZDoom environment.
 
 The process of building ViZDoom this way on Windows is demonstarted in [scripts/windows_build_cmake.bat](https://github.com/Farama-Foundation/ViZDoom/tree/master/scripts/windows_build_cmake.bat) script.
 
