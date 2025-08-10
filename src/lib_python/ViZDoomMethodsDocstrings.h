@@ -903,6 +903,10 @@ Note: changed in 1.1.0)DOCSTRING";
 
 Note: changed in 1.1.0)DOCSTRING";
 
+    const char *getDefaultCategories = R"DOCSTRING(Returns the default object categories of ViZDoom.
+
+Note: added in 1.3.0.)DOCSTRING";
+
     const char *doomTicsToSec = R"DOCSTRING(Calculates how many tics will be made during given number of seconds.
 
 Note: added in 1.1.0)DOCSTRING";
