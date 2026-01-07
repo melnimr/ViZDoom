@@ -45,8 +45,9 @@ if __name__ == "__main__":
             # Print notifications buffer
             notifications_buffer = state.notifications_buffer
             if notifications_buffer and len(notifications_buffer) > 0:
-                print(f"Notifications buffer: {notifications_buffer}")
-
+                print(
+                    f"Notifications buffer: {notifications_buffer}, {type(notifications_buffer)}"
+                )
             # Makes a random action and get remember reward.
             r = game.make_action(choice(actions), frameskip)
 

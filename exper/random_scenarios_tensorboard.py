@@ -23,9 +23,21 @@ def export_tensorboard_pngs(log_dir: Path, output_dir: Path) -> None:
     scalar_tags = set(accumulator.Tags().get("scalars", []))
 
     tag_map = {
-        "mean_reward": "rollout/ep_rew_mean",
-        "eps_len": "rollout/ep_len_mean",
-        "time_fps": "time/fps",
+        "mean_reward": {
+            "tag": "rollout/ep_rew_mean",
+            "title": "Mean Episode Reward",
+            "ylabel": "Reward",
+        },
+        "eps_len": {
+            "tag": "rollout/ep_len_mean",
+            "title": "Mean Episode Length",
+            "ylabel": "Steps",
+        },
+        "time_fps": {
+            "tag": "time/fps",
+            "title": "Throughput",
+            "ylabel": "FPS",
+        },
     }
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -33,6 +45,7 @@ def export_tensorboard_pngs(log_dir: Path, output_dir: Path) -> None:
     def apply_pub_style() -> None:
         import matplotlib.pyplot as plt
 
+        background = "#f6f6f2"
         try:
             plt.style.use("seaborn-v0_8-whitegrid")
         except OSError:
@@ -49,10 +62,13 @@ def export_tensorboard_pngs(log_dir: Path, output_dir: Path) -> None:
                 "axes.spines.top": False,
                 "axes.spines.right": False,
                 "grid.alpha": 0.3,
+                "figure.facecolor": background,
+                "axes.facecolor": background,
             }
         )
 
-    for filename, tag in tag_map.items():
+    for filename, meta in tag_map.items():
+        tag = meta["tag"]
         if tag not in scalar_tags:
             continue
         events = accumulator.Scalars(tag)
@@ -64,11 +80,11 @@ def export_tensorboard_pngs(log_dir: Path, output_dir: Path) -> None:
         apply_pub_style()
         plt.figure()
         plt.plot(steps, values)
-        plt.title(tag)
-        plt.xlabel("step")
-        plt.ylabel(tag)
+        plt.title(meta["title"])
+        plt.xlabel("Environment steps")
+        plt.ylabel(meta["ylabel"])
         plt.tight_layout()
-        plt.savefig(output_dir / f"{filename}.png")
+        plt.savefig(output_dir / f"{filename}.png", facecolor=plt.rcParams["figure.facecolor"])
         plt.close()
 
 
